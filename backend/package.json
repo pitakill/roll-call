@@ -1,0 +1,14 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Basic backend",
+  "scripts": {
+    "start": "json-server --watch db.json --port 4000"
+  },
+  "keywords": [],
+  "author": "@pitakill",
+  "license": "MIT",
+  "dependencies": {
+    "json-server": "^0.14.2"
+  }
+}
