@@ -34,7 +34,7 @@ class Create extends React.Component {
       date,
     } = this.state
 
-    if (!name && !lastname && !date) {
+    if (!name || !lastname || !date) {
       this.setState({variant: 'info', message: 'Llena todos los campos'})
 
       return
@@ -52,7 +52,7 @@ class Create extends React.Component {
 
     this.setState(
       {variant: 'success', message: 'Datos guardados'},
-      () => navigate('/attendance')
+      () => setTimeout(() => navigate('/attendance'), 1500)
     )
   }
 

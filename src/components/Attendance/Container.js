@@ -9,6 +9,7 @@ const defaultConfig = {
     'Content-Type': 'application/json'
   }
 }
+const dateRegex = /^\d{4}\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])$/
 
 class Container extends React.Component {
   state = {
@@ -16,10 +17,64 @@ class Container extends React.Component {
     error: null
   }
 
-  addData = ({model, config = defaultConfig}, data) => {
+  addData = async ({model, config = defaultConfig}, data) => {
+    const {
+      name,
+      lastname,
+      date,
+    } = data
+
+    if (!dateRegex.test(date)) return 'Fecha no válida'
+
+    // Hardcoded because there is only one group
+    const groupId = 1
+    let studentId
+
+    const studentsByLastnameRaw = await fetch(`${baseUrl}/students?q=${lastname}`)
+    const studentsByLastname = await studentsByLastnameRaw.json()
+
+    const studentsByNameRaw = await fetch(`${baseUrl}/students?q=${name}`)
+    const studentsByName = await studentsByNameRaw.json()
+
+    if (studentsByLastname.length && studentsByName.length) {
+      // We only search in the first element of the name's array
+      const student = studentsByLastname.find(student => student.name === studentsByName[0].name)
+
+      studentId = student ? student.id : null
+    }
+
+    if (studentId) {
+      const body = {
+        studentId,
+        groupId,
+        date,
+      }
+
+      return fetch(`${baseUrl}/${model}`, {
+        ...config,
+        body: JSON.stringify(body),
+      })
+    }
+
+    const studentRaw = await fetch(`${baseUrl}/students`, {
+      ...config,
+      body: JSON.stringify({
+        name,
+        lastname,
+        groupId,
+      })
+    })
+    const student = await studentRaw.json()
+
+  const body = {
+      studentId: student.id,
+      groupId,
+      date,
+    }
+
     return fetch(`${baseUrl}/${model}`, {
       ...config,
-      body: JSON.stringify(data),
+      body: JSON.stringify(body),
     })
   }
 
