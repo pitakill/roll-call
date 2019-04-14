@@ -4,8 +4,9 @@ import { Router, Redirect } from '@reach/router'
 import Row from 'react-bootstrap/Row'
 
 import {
-  Create as CreateAttendance,
-  List as ListAttendance
+  Container as ContainerAttendance,
+  Create,
+  List
 } from '../Attendance'
 
 const Body = props => (
@@ -13,8 +14,14 @@ const Body = props => (
     <Col xs={12}>
       <Router>
         <Redirect from='/' to='/attendance' />
-        <CreateAttendance path='/attendance/create' />
-        <ListAttendance path='/attendance' />
+        <ContainerAttendance
+          path='/attendance/create'
+          component={Create}
+        />
+        <ContainerAttendance
+          path='/attendance'
+          component={List}
+        />
       </Router>
     </Col>
   </Row>
