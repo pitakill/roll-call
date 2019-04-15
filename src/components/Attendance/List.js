@@ -1,10 +1,13 @@
 import React from 'react'
+import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table'
 
 const List = props => {
+  const model = 'attendance'
+
   React.useEffect(() => {
     props.getData({
-      model: 'attendance',
+      model,
       params: ['group', 'student'],
     })
 
@@ -29,6 +32,11 @@ const List = props => {
               <th>{element.student.name}</th>
               <th>{element.student.lastname}</th>
               <th>{element.date}</th>
+              <th>
+                <Button variant='light' onClick={e => props.deleteData({model}, e, element.id)}>
+                  Borrar
+                </Button>
+              </th>
             </tr>
           ))
         }

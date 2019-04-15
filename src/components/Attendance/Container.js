@@ -3,8 +3,14 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 
 const baseUrl = 'http://localhost:4000'
-const defaultConfig = {
+const defaultConfigCreate = {
   method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}
+const defaultConfigDelete = {
+  method: 'DELETE',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -17,7 +23,7 @@ class Container extends React.Component {
     error: null
   }
 
-  addData = async ({model, config = defaultConfig}, data) => {
+  addData = async ({model, config = defaultConfigCreate}, data) => {
     const {
       name,
       lastname,
@@ -82,6 +88,21 @@ class Container extends React.Component {
     this.setState({attendance: [], error: null})
   }
 
+  deleteData = async ({model, config = defaultConfigDelete}, e, index) => {
+    const response = await fetch(`${baseUrl}/${model}/${index}`, {...config})
+
+    if (response.ok) {
+      this.setState(state => {
+        const attendance = state.attendance.filter(e => e.id !== index)
+
+        return {
+          ...state,
+          attendance,
+        }
+      })
+    }
+  }
+
   getData = async ({model, params}, config) => {
     try {
       let url = model
@@ -105,6 +126,7 @@ class Container extends React.Component {
       ...this.state,
       addData: this.addData,
       clearData: this.clearData,
+      deleteData: this.deleteData,
       getData: this.getData,
     }
 
