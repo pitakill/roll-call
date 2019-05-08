@@ -16,6 +16,9 @@ const Header = props => (
         <Nav.Item>
           <Link to='/attendance/create'>Add Attendance</Link>
         </Nav.Item>
+        <Nav.Item>
+          <Link to='/student/create'>Add Student</Link>
+        </Nav.Item>
       </Nav>
     </Col>
   </Row>

@@ -2,25 +2,17 @@ import React from 'react'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 
-const baseUrl = 'http://localhost:4000'
-const defaultConfigCreate = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
-const defaultConfigDelete = {
-  method: 'DELETE',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
-const dateRegex = /^\d{4}\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])$/
+import { baseUrl, createDefaultMethod, dateRegex } from '../../constants'
+
+const defaultConfigDelete = createDefaultMethod('DELETE')
+const defaultConfigCreate = createDefaultMethod('POST')
 
 class Container extends React.Component {
   state = {
     attendance: [],
-    error: null
+    students: [],
+    groups: [],
+    error: null,
   }
 
   addData = async ({model, config = defaultConfigCreate}, data) => {

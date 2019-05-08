@@ -5,26 +5,35 @@ import Row from 'react-bootstrap/Row'
 
 import {
   Container as ContainerAttendance,
-  Create,
-  List
+  Create as CreateAttendance,
+  List as ListAttendance,
 } from '../Attendance'
+import {
+  Container as ContainerStudent,
+  Create as CreateStudent,
+  //List as ListStudent,
+} from '../Student'
 
-const Body = props => (
+const Home = props => (
   <Row>
     <Col xs={12}>
       <Router>
         <Redirect from='/' to='/attendance' />
         <ContainerAttendance
           path='/attendance/create'
-          component={Create}
+          component={CreateAttendance}
         />
         <ContainerAttendance
           path='/attendance'
-          component={List}
+          component={ListAttendance}
+        />
+        <ContainerStudent
+          path='/student/create'
+          component={CreateStudent}
         />
       </Router>
     </Col>
   </Row>
 )
 
-export default Body
+export default Home

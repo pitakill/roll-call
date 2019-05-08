@@ -1,44 +1,56 @@
 import React from 'react'
-import Alert from 'react-bootstrap/Alert'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
 import { navigate } from '@reach/router'
 
-import './Create.css'
+import Card from './Card'
+import { baseUrl } from '../../constants'
 
 class Create extends React.Component {
   state = {
-    name: '',
-    lastname: '',
-    date: '',
-    message: '',
-    variant: '',
+    date: new Date().toISOString().replace('-', '/').split('T')[0].replace('-', '/'),
+    groups: [],
+    students: [],
   }
 
-  handleChange = e => {
-    const {id, value} = e.target
+  async componentDidMount() {
+    const r = await fetch(`${baseUrl}/students`)
+    const students = await r.json()
 
-    this.setState({[id]: value})
+    const rs = await fetch(`${baseUrl}/groups`)
+    const groups = await rs.json()
+
+    this.setState({groups, students})
   }
 
-  handleDismiss = () => {
-    this.setState({variant: '', message: ''})
+  displayInfo() {
+    return this.state.groups.map(group => (
+      <Row key={group.code}>
+      <Col xs={12}>
+        <h2 className="text-center">{group.code}</h2>
+      </Col>
+      {
+        this.state.students.map(student => {
+          if (student.groupId !== group.id) {
+            return null
+          }
+
+          return (
+            <Col key={student.id} xs={12} sm={6} md={4} lg={3}>
+              <Card {...student} handleSubmit={this.handleSubmit}/>
+            </Col>
+          )
+        })
+      }
+      </Row>
+    ))
   }
 
-  handleSubmit = async e => {
-    e.preventDefault()
+  handleSubmit = async (e, data) => {
+    this.setState({loading: true})
 
-    const {
-      name,
-      lastname,
-      date,
-    } = this.state
-
-    if (!name || !lastname || !date) {
-      this.setState({variant: 'info', message: 'Llena todos los campos'})
-
-      return
-    }
+    const { name, lastname } = data
+    const { date } = this.state
 
     const response = await this.props.addData(
       {model: 'attendance'},
@@ -57,54 +69,7 @@ class Create extends React.Component {
   }
 
   render() {
-    return (
-      <>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Group controlId="name">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Juan"
-              onChange={this.handleChange}
-              value={this.state.name}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="lastname">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Pérez"
-              onChange={this.handleChange}
-              value={this.state.lastname}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="date">
-            <Form.Label>Fecha</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="2019/03/29"
-              onChange={this.handleChange}
-              value={this.state.date}
-            />
-          </Form.Group>
-
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-        <Alert
-          className="alert-create"
-          dismissible
-          variant={this.state.variant}
-          onClose={this.handleDismiss}
-          show={this.state.variant}
-          >
-          {this.state.message}
-        </Alert>
-      </>
-    )
+    return <> { this.displayInfo () } </>
   }
 }
 
