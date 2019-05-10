@@ -2,6 +2,8 @@ import React from 'react'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
 
+import './Card.css'
+
 class Card extends React.Component {
   state = {
     loading: false
@@ -28,10 +30,10 @@ class Card extends React.Component {
   }
 
   render() {
-    const { name, lastname } = this.props
+    const { name, lastname, size } = this.props
     return (
       <>
-        <img src={`https://api.adorable.io/avatars/250/${name}${lastname}.png`} alt={`${name} ${lastname}`}/>
+        <img src={`https://api.adorable.io/avatars/${size}/${name}${lastname}.png`} alt={`${name} ${lastname}`}/>
         <span>{name}</span>
         { ' ' }
         <span>{lastname}</span>

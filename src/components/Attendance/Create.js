@@ -2,20 +2,29 @@ import React from 'react'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import { navigate } from '@reach/router'
+import moment from 'moment'
 
+import './Create.css'
 import Card from './Card'
 import { baseUrl } from '../../constants'
 
 class Create extends React.Component {
   state = {
-    date: new Date().toISOString().replace('-', '/').split('T')[0].replace('-', '/'),
+    today: moment().format('YYYY/MM/DD'),
     groups: [],
     students: [],
   }
 
   async componentDidMount() {
-    const r = await fetch(`${baseUrl}/students`)
-    const students = await r.json()
+    let url = `${baseUrl}/students`
+
+    const params = ['attendance']
+
+    url += '?'
+    url += params.map(param => `_embed=${param}`).join('&')
+
+    const res = await fetch(url)
+    const students = await res.json()
 
     const rs = await fetch(`${baseUrl}/groups`)
     const groups = await rs.json()
@@ -35,8 +44,14 @@ class Create extends React.Component {
             return null
           }
 
+          if (Array.isArray(student.attendance)) {
+            if (student.attendance.find(m => m.date === this.state.today)) {
+              return null
+            }
+          }
+
           return (
-            <Col key={student.id} xs={12} sm={6} md={4} lg={3}>
+            <Col key={student.id} xs={12} sm={6} md={4} lg={3} className='Card-wrapper text-center'>
               <Card {...student} handleSubmit={this.handleSubmit}/>
             </Col>
           )
@@ -50,7 +65,7 @@ class Create extends React.Component {
     this.setState({loading: true})
 
     const { name, lastname } = data
-    const { date } = this.state
+    const { today: date } = this.state
 
     const response = await this.props.addData(
       {model: 'attendance'},
