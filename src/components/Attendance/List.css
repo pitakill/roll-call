@@ -1,0 +1,11 @@
+.List {
+  text-align: center;
+}
+
+.List > img {
+  width: auto;
+}
+
+th {
+  vertical-align: middle !important;
+}

@@ -1,7 +1,6 @@
 import React from 'react'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
-import { navigate } from '@reach/router'
 import moment from 'moment'
 
 import './Create.css'
@@ -39,7 +38,7 @@ class Create extends React.Component {
         <h2 className="text-center">{group.code}</h2>
       </Col>
       {
-        this.state.students.map(student => {
+        this.state.students.map((student, id) => {
           if (student.groupId !== group.id) {
             return null
           }
@@ -52,7 +51,7 @@ class Create extends React.Component {
 
           return (
             <Col key={student.id} xs={12} sm={6} md={4} lg={3} className='Card-wrapper text-center'>
-              <Card {...student} handleSubmit={this.handleSubmit}/>
+              <Card {...student} position={id} handleSubmit={this.handleSubmit}/>
             </Col>
           )
         })
@@ -64,7 +63,7 @@ class Create extends React.Component {
   handleSubmit = async (e, data) => {
     this.setState({loading: true})
 
-    const { name, lastname } = data
+    const { name, lastname, position } = data
     const { today: date } = this.state
 
     const response = await this.props.addData(
@@ -79,7 +78,11 @@ class Create extends React.Component {
 
     this.setState(
       {variant: 'success', message: 'Datos guardados'},
-      () => setTimeout(() => navigate('/attendance'), 1500)
+      () => setTimeout(() => this.setState((prevState, props) => {
+        return {
+          students: prevState.students.filter((e, i) => !(i === position))
+        }
+      }), 1500)
     )
   }
 

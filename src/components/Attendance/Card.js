@@ -30,7 +30,7 @@ class Card extends React.Component {
   }
 
   render() {
-    const { name, lastname, size } = this.props
+    const { name, lastname, size, position } = this.props
     return (
       <>
         <img src={`https://api.adorable.io/avatars/${size}/${name}${lastname}.png`} alt={`${name} ${lastname}`}/>
@@ -38,7 +38,7 @@ class Card extends React.Component {
         { ' ' }
         <span>{lastname}</span>
         <br />
-        { this.displayButton({name, lastname}) }
+        { this.displayButton({name, lastname, position}) }
       </>
     )
   }

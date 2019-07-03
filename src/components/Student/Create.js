@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Form from 'react-bootstrap/Form'
-import { navigate } from '@reach/router'
 
 import { createDefaultMethod, throttle, throttleTime } from '../../constants'
 
@@ -28,6 +27,15 @@ class Create extends React.Component {
     } catch (e) {
       console.error(e)
     }
+  }
+
+  cleanForm = () => {
+    this.setState({
+      name: '',
+      lastname: '',
+      message: '',
+      variant: '',
+    })
   }
 
   handleChange = e => {
@@ -68,7 +76,7 @@ class Create extends React.Component {
 
     this.setState(
       {variant: 'success', message: 'Datos guardados'},
-      () => setTimeout(() => navigate('/attendance'), 1500)
+      () => setTimeout(() => this.cleanForm(), 1500)
     )
   }
 
