@@ -2,14 +2,14 @@ import React from 'react'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 
-import { baseUrl, createDefaultMethod, dateRegex } from '../../constants'
+import { baseUrl, createDefaultMethod } from '../../constants'
 
 const defaultConfigDelete = createDefaultMethod('DELETE')
 const defaultConfigCreate = createDefaultMethod('POST')
 
 class Container extends React.Component {
   state = {
-    attendance: [],
+    attendance: {},
     students: [],
     groups: [],
     error: null,
@@ -21,8 +21,6 @@ class Container extends React.Component {
       lastname,
       date,
     } = data
-
-    if (!dateRegex.test(date)) return 'Fecha no válida'
 
     // Hardcoded because there is only one group
     const groupId = 1
@@ -77,15 +75,23 @@ class Container extends React.Component {
   }
 
   clearData = () => {
-    this.setState({attendance: [], error: null})
+    this.setState({attendance: {}, error: null})
   }
 
-  deleteData = async ({model, config = defaultConfigDelete}, e, index) => {
+  deleteData = async ({model, config = defaultConfigDelete}, e, index, date) => {
     const response = await fetch(`${baseUrl}/${model}/${index}`, {...config})
 
     if (response.ok) {
       this.setState(state => {
-        const attendance = state.attendance.filter(e => e.id !== index)
+        const students = state.attendance[date].filter(e => e.id !== index)
+        const attendance = {
+          ...state.attendance,
+          [date]: students,
+        }
+
+        if (students.length === 0) {
+          delete(attendance[date])
+        }
 
         return {
           ...state,
@@ -106,6 +112,27 @@ class Container extends React.Component {
 
       const dataRaw = await fetch(`${baseUrl}/${url}`, config)
       const data = await dataRaw.json()
+
+      // Construct an Object from the response (Array)
+      // Key the date of the attendance; Value the Array with the students
+      if (!Array.isArray(this.state[model])) {
+        const mod = {}
+
+        data.forEach(item => {
+          const items = mod[item.date]
+
+          if (!Array.isArray(items)) {
+            mod[item.date] = [item]
+            return
+          }
+
+          mod[item.date].push(item)
+        })
+
+        this.setState({[model]: mod, error: null})
+
+        return
+      }
 
       this.setState({[model]: data, error: null})
     } catch (error) {

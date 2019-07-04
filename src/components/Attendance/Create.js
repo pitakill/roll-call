@@ -2,14 +2,16 @@ import React from 'react'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import moment from 'moment'
+import 'moment/locale/es'
 
 import './Create.css'
 import Card from './Card'
 import { baseUrl } from '../../constants'
 
+
 class Create extends React.Component {
   state = {
-    today: moment().format('YYYY/MM/DD'),
+    today: moment().locale('es').format('LL'),
     groups: [],
     students: [],
   }
@@ -82,7 +84,7 @@ class Create extends React.Component {
         return {
           students: prevState.students.filter((e, i) => !(i === position))
         }
-      }), 1500)
+      }), 300)
     )
   }
 

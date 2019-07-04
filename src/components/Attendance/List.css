@@ -9,3 +9,18 @@
 th {
   vertical-align: middle !important;
 }
+
+.Date {
+  text-align: center;
+  transition: all .2s ease-in-out;
+  vertical-align: middle !important;
+  width: 200px;
+}
+
+.Date.Large {
+  font-size: 3em;
+}
+
+.Date.Small {
+  font-size: 1.35em;
+}
