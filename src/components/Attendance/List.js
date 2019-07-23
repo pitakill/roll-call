@@ -63,7 +63,7 @@ const renderList = (obj, deleteData) => {
           </td>
           <td>{element.student.name}</td>
           <td>{element.student.lastname}</td>
-          <td>
+          <td className="List-button">
             <Button variant='light' onClick={e => deleteData({model: 'attendance'}, e, element.id, element.date)}>
               Borrar
             </Button>

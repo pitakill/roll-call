@@ -6,6 +6,15 @@
   width: auto;
 }
 
+.List-button > button {
+  transition: opacity .2s linear;
+  opacity: .05;
+}
+
+.List-button:hover > button {
+  opacity: 1;
+}
+
 th {
   vertical-align: middle !important;
 }
